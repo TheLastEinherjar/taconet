@@ -17,9 +17,16 @@ def relay_messages(client_socket:socket.socket) :
             else :
                 match json_message['message'] :
                     case '-close' :
+                        try :
+                            all_clients.remove(client_socket)
+                            client_socket.close()
+                        except : 
+                            pass
                         for client in all_clients :
-                            client.sendall(json.dumps({'username':'<system>', 'message':f'[{json_message["username"]}] Disconected.'}))
-                        all_clients.remove(client_socket)
+                            try :
+                                client.sendall(json.dumps({'name':'<system>', 'message':f'[{json_message["name"]}] Disconected.'}).encode('utf-8'))
+                            except BrokenPipeError :
+                                all_clients.remove(client)
 
 
 

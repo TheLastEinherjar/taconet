@@ -48,9 +48,11 @@ class RainbowText:
     
 def main(stdscr):
     global standard_screen, rt
-    standard_screen = stdscr
     # Set up the screen
-    curses.curs_set(1)  # Show cursor
+    stdscr = curses.initscr()
+    curses.noecho()
+    stdscr.keypad(True)
+    curses.curs_set(0)  # Show cursor
     stdscr.nodelay(1)  # Set getch() to non-blocking
     stdscr.timeout(100)  # Refresh every 100ms
 
@@ -60,8 +62,8 @@ def main(stdscr):
     input_window = curses.newwin(4, curses.COLS, curses.LINES - 4, 0)
 
     message_window.scrollok(True) # Enable scrolling in message window
-    input_window.scrollok(True)
     curses.start_color()
+    standard_screen = stdscr
     rt = RainbowText(stdscr)
 
 def print_message(message) :
@@ -87,10 +89,10 @@ def message_input():
     while True:
         # Handle user input
         ch = standard_screen.getch()
-        if ch == ord('\n'):  # Enter key
+        if ch == ord("\n"):  # Enter key
             # Send the message
             return message
-        elif ch in (curses.KEY_BACKSPACE, 8, curses.KEY_LEFT) :
+        elif ch == curses.KEY_BACKSPACE :
             message = message[:-1]
         elif ch != -1:
             message += chr(ch)
@@ -129,6 +131,10 @@ def send_messages() :
                 case '-close' :
                     close_message = json.dumps({'name': username, 'message': '-close'})
                     sock.sendall(close_message.encode('utf-8'))
+                    try :
+                        sock.close()
+                    except :
+                        pass
                     remain_open = False
 
 # Prompt the user for the socket address and username
