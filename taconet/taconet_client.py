@@ -92,7 +92,7 @@ def message_input():
         if ch == ord("\n"):  # Enter key
             # Send the message
             return message
-        elif ch == curses.KEY_BACKSPACE :
+        elif ch == curses.KEY_BACKSPACE or ch == ord('\b') :
             message = message[:-1]
         elif ch != -1:
             message += chr(ch)
