@@ -90,7 +90,7 @@ def message_input():
         if ch == ord('\n'):  # Enter key
             # Send the message
             return message
-        elif ch in (curses.KEY_BACKSPACE, 8, ord('^[[3~')) :
+        elif ch in (curses.KEY_BACKSPACE, 8, curses.KEY_LEFT) :
             message = message[:-1]
         elif ch != -1:
             message += chr(ch)
